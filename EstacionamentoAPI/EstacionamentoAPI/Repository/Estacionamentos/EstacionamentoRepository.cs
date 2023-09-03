@@ -6,6 +6,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace EstacionamentoAPI.Repository.Estacionamentos
 {
+
     public class EstacionamentoRepository: IEstacionamentoRepository
     {
 
@@ -28,7 +29,7 @@ namespace EstacionamentoAPI.Repository.Estacionamentos
               DataSaida = x.DataSaida,
               Duracao = x.Duracao,
               TempoCobrado = x.TempoCobrado,
-              Preco = x.Preco,
+              Preco = x.Preco.Valor,
               ValorTotal = x.ValorTotal,
           })
           .ToListAsync();
@@ -67,6 +68,25 @@ namespace EstacionamentoAPI.Repository.Estacionamentos
            
         }
 
-        
+        public Task<ObterEstacionamentoResult?> ObterEstacionamentoPorPlaca(string placa)
+        {
+
+            return _estacionamento
+                .Include(x => x.Preco)
+                .Where(x => x.Placa.Equals(placa))
+           .Select(x => new ObterEstacionamentoResult
+           {
+               Id = x.Id,
+               Placa = x.Placa,
+               DataEntrada = x.DataEntrada,
+               DataSaida = x.DataSaida,
+               Duracao = x.Duracao,
+               TempoCobrado = x.TempoCobrado,
+               Preco = x.Preco,
+               ValorTotal = x.ValorTotal,
+           })
+           .FirstOrDefaultAsync();
+
+        }
     }
 }

@@ -20,7 +20,6 @@ namespace EstacionamentoAPI.Entities
         public int TempoCobrado { get; set; }
         [Required, NotNull]
         public DateTime DataInsert { get; set; }
-       
         public DateTime? DataAlteracao { get; set; }
         [Required, NotNull]
         public int PrecoId {  get; set; }

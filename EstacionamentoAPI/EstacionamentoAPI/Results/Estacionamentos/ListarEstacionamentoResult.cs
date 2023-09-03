@@ -14,9 +14,8 @@ namespace EstacionamentoAPI.Results.Estacionamentos
         public DateTime DataSaida { get; set; }
         
         public TimeSpan Duracao { get; set; }
-       
         public int TempoCobrado { get; set; }
-        public EstacionamentoAPI.Entities.Preco Preco { get; set; }
+        public double Preco { get; set; }
         public double ValorTotal { get; set; }
 
     }

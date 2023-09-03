@@ -28,18 +28,28 @@ namespace EstacionamentoAPI.Handler.Estacionamentos
                 var preco = await _precoRepository.ObterPrecoPorData(salvarEstacionamentoModel.DataEntrada);
                 if (preco != null)
                 {
-                    var estacionamento = new Estacionamento()
+                    var estacionamentoExiste = await _estacionamentoRepository.ObterEstacionamentoPorPlaca(salvarEstacionamentoModel.Placa);
+                    if(estacionamentoExiste == null)
                     {
-                        Placa = salvarEstacionamentoModel.Placa,
-                        DataEntrada = salvarEstacionamentoModel.DataEntrada,
-                        PrecoId = preco.Id
-                    };
+                        var estacionamento = new Estacionamento()
+                        {
+                            Placa = salvarEstacionamentoModel.Placa,
+                            DataEntrada = salvarEstacionamentoModel.DataEntrada.AddHours(-3),
+                            PrecoId = preco.Id,
+                            DataInsert = DateTime.Now
+                        };
 
-                    var estacionamentoSalvo = await _estacionamentoRepository.SalvarEstacionamento(estacionamento);
-                    if (estacionamentoSalvo != 0)
-                    {
-                        return new Output() { IsSuccess = true, Message = "Salvo com sucesso" };
+                        var estacionamentoSalvo = await _estacionamentoRepository.SalvarEstacionamento(estacionamento);
+                        if (estacionamentoSalvo != 0)
+                        {
+                            return new Output() { IsSuccess = true, Message = "Salvo com sucesso" };
+                        }
                     }
+                    else
+                    {
+                        return new Output() { IsSuccess = false, Message = "A placa já existe" };
+                    }
+                    
                 }
                 else
                 {
@@ -60,19 +70,22 @@ namespace EstacionamentoAPI.Handler.Estacionamentos
         {
             try
             {
-              
-                 
-                 var estacionamento = await _estacionamentoRepository.ObterEstacionamento(atualizarEstacionamentoModel.Id);
-                if (!IsValid(estacionamento.DataEntrada, atualizarEstacionamentoModel.DataSaida)) {
-                    return new Output()
-                    {
-                        IsSuccess = false,
-                        Message = "A data de saída deve ser maior que a data de entrada"
-                    };
-                }
 
+
+                var estacionamento = await _estacionamentoRepository.ObterEstacionamentoPorPlaca(atualizarEstacionamentoModel.Placa);
+
+             
                 if (estacionamento != null)
                 {
+                    if (!IsValid(estacionamento.DataEntrada, atualizarEstacionamentoModel.DataSaida))
+                    {
+                        return new Output()
+                        {
+                            IsSuccess = false,
+                            Message = "A data de saída deve ser maior que a data de entrada"
+                        };
+                    }
+
                     var duracao = atualizarEstacionamentoModel.DataSaida.Subtract(estacionamento.DataEntrada);
                     var tempoCobrado = CalcularTempoCobrado(duracao);
                     var valorTotal = CalcularValorTotal(tempoCobrado, estacionamento.Preco.Valor);
@@ -81,18 +94,21 @@ namespace EstacionamentoAPI.Handler.Estacionamentos
                     var estacaionamentoAtualizar = new Estacionamento()
 
                     {
-
-                        Id = atualizarEstacionamentoModel.Id,
+                        Id = estacionamento.Id,
                         Placa = estacionamento.Placa,
-                        DataEntrada = estacionamento.DataEntrada,
                         DataSaida = atualizarEstacionamentoModel.DataSaida,
                         Duracao = duracao,
                         TempoCobrado = tempoCobrado,
-                        DataAlteracao = estacionamento.DataAlteracao,
+                        DataAlteracao = DateTime.Now,
+                        DataInsert = estacionamento.DataInsert,
+                        DataEntrada = estacionamento.DataEntrada,
                         Preco = estacionamento.Preco,
                         ValorTotal = valorTotal
 
                     };
+
+                    //estacaionamentoAtualizar.DataAlteracao = DateTime.Now.AddHours(-3);
+                   // estacaionamentoAtualizar.DataSaida = DateTime.Now.AddHours(-3);
 
                     _estacionamentoRepository.AtualizarEstacionamento(estacaionamentoAtualizar);
 
@@ -100,6 +116,14 @@ namespace EstacionamentoAPI.Handler.Estacionamentos
                     {
                         IsSuccess = true,
                         Message = "Atualizado com sucesso"
+                    };
+                }
+                else
+                {
+                    return new Output()
+                    {
+                        IsSuccess = false,
+                        Message = "A placa indicada não existe"
                     };
                 }
             }catch(Exception ex)

@@ -18,7 +18,6 @@ namespace EstacionamentoAPI.Results.Estacionamentos
 
         public DateTime DataAlteracao { get; set; } 
      
-        public int PrecoId { get; set; }
      
         public Entities.Preco Preco { get; set; }
         public double ValorTotal { get; set; }

@@ -5,12 +5,13 @@ using EstacionamentoAPI.Models;
 using EstacionamentoAPI.Repository.Estacionamentos;
 using EstacionamentoAPI.Results.Estacionamentos;
 using EstacionamentoAPI.Shared;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection.Metadata;
 
 namespace EstacionamentoAPI.Controllers;
 
-[ApiController]
+[ApiController, Produces("application/json")]
 [Route("[controller]")]
 public class EstacionamentoController : ControllerBase
 {
@@ -35,11 +36,13 @@ public class EstacionamentoController : ControllerBase
         return BadRequest(salvarEstacionamento);
     }
 
-    [HttpPut("{id}")]
-    public async Task<ActionResult<Output>>AtualizarEstacionamento([FromRoute] int id, [FromBody] AtualizarEstacionamentoModel estacionamento)
+    [HttpPut("{placa}")]
+    public async Task<ActionResult<Output>>AtualizarEstacionamento([FromRoute] string placa, [FromBody] DateTime dataSaida)
     {
-        estacionamento.Id = id;
-        var atualizarEstacionamento = await _estacionamentoHandler.AtualizarEstacionamentoHandler(estacionamento);
+        var utcDate = dataSaida.AddHours(-3);
+        var atualizarModel = new AtualizarEstacionamentoModel { Placa = placa, DataSaida = utcDate};
+        var atualizarEstacionamento = await _estacionamentoHandler.AtualizarEstacionamentoHandler(atualizarModel);
+        
         if (atualizarEstacionamento.IsSuccess)
             return Ok(atualizarEstacionamento);
         return BadRequest(atualizarEstacionamento);
@@ -50,12 +53,12 @@ public class EstacionamentoController : ControllerBase
     //    estacionamentos.Add(estacionamento);
     //    return CreatedAtAction(nameof(ListaEstacionamentoPorId), new { id = estacionamento.Id }, estacionamento);
     //}
-
     [HttpGet]
     public async Task<ActionResult<List<ListarEstacionamentoResult>>>ListagemEstacionamento()
     {
 
         var estacionamentos = await _estacionamentoRepository.ListagemEstacionamentos();
+        
         return Ok(estacionamentos);
     }
 
