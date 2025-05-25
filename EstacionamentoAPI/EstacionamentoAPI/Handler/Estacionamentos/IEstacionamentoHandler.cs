@@ -11,5 +11,6 @@ public interface IEstacionamentoHandler
 {
     Task<Output>SalvarEstacionamentoHandler(SalvarEstacionamentoModel salvarEstacionamentoModel);
     Task<Output>AtualizarEstacionamentoHandler(AtualizarEstacionamentoModel atualizarEstacionamentoModel);
+    Task<Output> DeletarEstacionamentoHandler(int id);
     
 }

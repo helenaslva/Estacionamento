@@ -1,13 +1,10 @@
 ﻿
-using EstacionamentoAPI.Entities;
 using EstacionamentoAPI.Handler.Estacionamentos;
 using EstacionamentoAPI.Models;
 using EstacionamentoAPI.Repository.Estacionamentos;
 using EstacionamentoAPI.Results.Estacionamentos;
 using EstacionamentoAPI.Shared;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using System.Reflection.Metadata;
 
 namespace EstacionamentoAPI.Controllers;
 
@@ -47,12 +44,7 @@ public class EstacionamentoController : ControllerBase
             return Ok(atualizarEstacionamento);
         return BadRequest(atualizarEstacionamento);
     }
-    //public IActionResult Entrada([FromBody] Estacionamento estacionamento)
-    //{
-    //    estacionamento.Id = Id++;
-    //    estacionamentos.Add(estacionamento);
-    //    return CreatedAtAction(nameof(ListaEstacionamentoPorId), new { id = estacionamento.Id }, estacionamento);
-    //}
+ 
     [HttpGet]
     public async Task<ActionResult<List<ListarEstacionamentoResult>>>ListagemEstacionamento()
     {
@@ -62,12 +54,11 @@ public class EstacionamentoController : ControllerBase
         return Ok(estacionamentos);
     }
 
-        //}
-        //[HttpGet("{id}")]
-        //public IActionResult ListaEstacionamentoPorId(int id)
-        //{
-        //    var estacionamento = estacionamentos.FirstOrDefault(estacionamento => estacionamento.Id == id);
-        //    if (estacionamento == null) return NotFound();
-        //    return Ok(estacionamento);
-        //}
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<Output>> DeletarEstacionamento([FromRoute] int id)
+    {
+        var deletado = await _estacionamentoHandler.DeletarEstacionamentoHandler(id);
+
+        return Ok(deletado);
+    }
     }

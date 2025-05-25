@@ -14,7 +14,5 @@ namespace EstacionamentoAPI.Data.Mappings
             builder.Property(x => x.Valor).IsRequired();
            
         }
-
-      
     }
 }

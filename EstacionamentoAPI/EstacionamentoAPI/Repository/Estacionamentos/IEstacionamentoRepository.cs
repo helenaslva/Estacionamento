@@ -10,5 +10,6 @@ namespace EstacionamentoAPI.Repository.Estacionamentos
         Task<int> SalvarEstacionamento(Estacionamento estacionamento);
         Task AtualizarEstacionamento(Estacionamento estacionamento);
         Task<ObterEstacionamentoResult> ObterEstacionamentoPorPlaca(string placa);
+        Task<int> DeletarEstacionamentoPorId(Estacionamento estacionamento);
     }
 }

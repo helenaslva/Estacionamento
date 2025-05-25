@@ -1,7 +1,9 @@
 using EstacionamentoAPI.Data;
 using EstacionamentoAPI.Handler.Estacionamentos;
+using EstacionamentoAPI.Handler.Precos;
 using EstacionamentoAPI.Repository.Estacionamentos;
 using EstacionamentoAPI.Repository.Preco;
+using EstacionamentoAPI.Repository.Precos;
 using EstacionamentoAPI.Shared;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
@@ -10,17 +12,19 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(policy =>
+    options.AddPolicy("AllowAll", policy =>
     {
-        policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().AllowCredentials();
-    }
-    );
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
 });
 
 // Add services to the container.
 builder.Services.AddScoped<IEstacionamentoRepository, EstacionamentoRepository>();
 builder.Services.AddScoped<IEstacionamentoHandler, EstacionamentoHandler>();
 builder.Services.AddScoped<IPrecoRepository, PrecoRepository>();
+builder.Services.AddScoped<IPrecoHandler, PrecoHandler>();
 
 builder.Services.AddControllers(options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true);
 builder.Services.AddEndpointsApiExplorer();
@@ -41,12 +45,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
 app.MapControllers();
+app.UseRouting();
+
+app.UseCors("AllowAll");
+
 
 // app.UseCorsMiddleware();
 

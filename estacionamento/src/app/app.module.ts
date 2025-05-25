@@ -19,9 +19,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MarcarSaidaDialogComponent } from './marcar-saida-dialog/marcar-saida-dialog.component';
 import { MarcarSaidaDialogModule } from './marcar-saida-dialog/marcar-saida-dialog.module';
 import { ToastrModule } from 'ngx-toastr';
+import { PrecoListagemComponent } from './preco-listagem-dialog/preco-listagem.component';
+import { PrecoListagemModule } from './preco-listagem-dialog/preco-listagem.module';
+import { PrecoCadastroDialogComponent } from './preco-cadastro-dialog/preco-cadastro-dialog.component';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, PrecoCadastroDialogComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -37,6 +40,7 @@ import { ToastrModule } from 'ngx-toastr';
     MarcarEntradaDialogModule,
     MatInputModule,
     MarcarSaidaDialogModule,
+    PrecoListagemModule,
     ToastrModule.forRoot({
       timeOut: 5000, // 5 seconds
       closeButton: false,

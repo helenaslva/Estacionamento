@@ -12,6 +12,7 @@ import { MarcarEntradaDialogComponent } from './marcar-entrada-dialog/marcar-ent
 import { FormGroup } from '@angular/forms';
 import { MarcarSaidaDialogComponent } from './marcar-saida-dialog/marcar-saida-dialog.component';
 import { ToastrService } from 'ngx-toastr';
+import { PrecoListagemComponent } from './preco-listagem-dialog/preco-listagem.component';
 
 @Component({
   selector: 'app-root',
@@ -39,13 +40,29 @@ export class AppComponent {
   ) {}
 
   ngOnInit(): void {
+    console.log("Aqui vai")
     this.listarEstacionamentos();
+
+
+    this.estacionamento.forEach((item) => {
+      // aqui você acessa os dados de cada item
+      console.log(item.placa);
+
+    });
+
+
   }
 
   private listarEstacionamentos() {
     this.estaciomentoService.listar().subscribe((e) => {
       this.estacionamento = e;
     });
+
+  }
+
+  openDialogPrecos(): void {
+    const dialogRef = this.dialog.open(PrecoListagemComponent, {});
+
   }
 
   openDialogEntrada(): void {

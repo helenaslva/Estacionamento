@@ -2,9 +2,8 @@
 using EstacionamentoAPI.Models;
 using EstacionamentoAPI.Repository.Estacionamentos;
 using EstacionamentoAPI.Repository.Preco;
+using EstacionamentoAPI.Repository.Precos;
 using EstacionamentoAPI.Shared;
-using Microsoft.VisualBasic;
-using System.Linq.Expressions;
 
 namespace EstacionamentoAPI.Handler.Estacionamentos
 {
@@ -70,11 +69,8 @@ namespace EstacionamentoAPI.Handler.Estacionamentos
         {
             try
             {
-
-
                 var estacionamento = await _estacionamentoRepository.ObterEstacionamentoPorPlaca(atualizarEstacionamentoModel.Placa);
 
-             
                 if (estacionamento != null)
                 {
                     if (!IsValid(estacionamento.DataEntrada, atualizarEstacionamentoModel.DataSaida))
@@ -89,7 +85,6 @@ namespace EstacionamentoAPI.Handler.Estacionamentos
                     var duracao = atualizarEstacionamentoModel.DataSaida.Subtract(estacionamento.DataEntrada);
                     var tempoCobrado = CalcularTempoCobrado(duracao);
                     var valorTotal = CalcularValorTotal(tempoCobrado, estacionamento.Preco.Valor);
-
 
                     var estacaionamentoAtualizar = new Estacionamento()
 
@@ -107,8 +102,6 @@ namespace EstacionamentoAPI.Handler.Estacionamentos
 
                     };
 
-                    //estacaionamentoAtualizar.DataAlteracao = DateTime.Now.AddHours(-3);
-                   // estacaionamentoAtualizar.DataSaida = DateTime.Now.AddHours(-3);
 
                     _estacionamentoRepository.AtualizarEstacionamento(estacaionamentoAtualizar);
 
@@ -133,8 +126,41 @@ namespace EstacionamentoAPI.Handler.Estacionamentos
          
                 return new Output() { IsSuccess = false };
 
-
         }
+        public async Task<Output> DeletarEstacionamentoHandler(int id)
+        {
+            try
+            {
+                var estacionamento = await _estacionamentoRepository.ObterEstacionamento(id);
+                if(estacionamento != null)
+                {
+                    var estacionamentoDeletar = new Estacionamento() 
+                    {
+                        Id = id,
+                        Placa = estacionamento.Placa,
+                        DataSaida = estacionamento.DataSaida,
+                        Duracao =estacionamento.Duracao,
+                        TempoCobrado = estacionamento.TempoCobrado,
+                        DataAlteracao = estacionamento.DataAlteracao,
+                        DataInsert = estacionamento.DataInsert,
+                        DataEntrada = estacionamento.DataEntrada,
+                        Preco = estacionamento.Preco,
+                        ValorTotal = estacionamento.ValorTotal
+                    };
+
+                    var deletado = _estacionamentoRepository.DeletarEstacionamentoPorId(estacionamentoDeletar);
+                    return new Output()
+                    {
+                        IsSuccess = true,
+                        Message = $"Deletado com sucesso estacionamento Placa {estacionamento.Placa} Id {estacionamento.Id}"
+                    };
+                }
+                else { return new Output { IsSuccess = false, Message = "O estacionamento não existe" }; }
+
+                
+            }catch (Exception ex) { return new Output { IsSuccess=false, Message = $"Algo de errado inesperado aconteceu: {ex.Message} " }; }
+        }
+
 
         private int CalcularTempoCobrado(TimeSpan duracao)
         {
@@ -160,15 +186,11 @@ namespace EstacionamentoAPI.Handler.Estacionamentos
                         horasAPagar += 1;
                     }
                 }
-             
-
             }
            
 
-
             return horasAPagar;
         }
-
         private double CalcularValorTotal(int tempo, double valor)
         {
             double valorTotal = tempo * valor;
@@ -180,6 +202,8 @@ namespace EstacionamentoAPI.Handler.Estacionamentos
         {
             return dataEntrada < dataSaida;
         }
+
+
     }
 
    

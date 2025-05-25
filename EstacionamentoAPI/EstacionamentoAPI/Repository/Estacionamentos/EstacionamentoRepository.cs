@@ -7,7 +7,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 namespace EstacionamentoAPI.Repository.Estacionamentos
 {
 
-    public class EstacionamentoRepository: IEstacionamentoRepository
+    public class EstacionamentoRepository : IEstacionamentoRepository
     {
 
         private readonly EstacionamentoContext _context;
@@ -88,5 +88,14 @@ namespace EstacionamentoAPI.Repository.Estacionamentos
            .FirstOrDefaultAsync();
 
         }
+
+        public async Task<int> DeletarEstacionamentoPorId(Estacionamento estacionamento)
+        {
+            var removido = _context.Remove(estacionamento);
+            await _context.SaveChangesAsync();
+            return estacionamento.Id;
+        }
+
+
     }
 }

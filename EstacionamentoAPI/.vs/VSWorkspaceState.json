@@ -1,0 +1,14 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\EstacionamentoAPI",
+    "\\EstacionamentoAPI\\Data",
+    "\\EstacionamentoAPI\\Data\\Mappings",
+    "\\EstacionamentoAPI\\Entities",
+    "\\EstacionamentoAPI\\Handler\\Estacionamentos",
+    "\\EstacionamentoAPI\\Repository\\Estacionamentos",
+    "\\EstacionamentoAPI\\Results\\Estacionamentos"
+  ],
+  "SelectedNode": "\\EstacionamentoAPI\\Entities\\Preco.cs",
+  "PreviewInSolutionExplorer": false
+}

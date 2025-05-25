@@ -1,0 +1,15 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\Data",
+    "\\Entities",
+    "\\Handler",
+    "\\Models",
+    "\\Models\\Preco",
+    "\\Repository",
+    "\\Repository\\Precos",
+    "\\Results\\Estacionamentos",
+    "\\Results\\Preco"
+  ],
+  "PreviewInSolutionExplorer": false
+}
